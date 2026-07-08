@@ -392,11 +392,27 @@ impl Ty {
             "enum.Vector3::Axis" => Ty::Vector3Axis,
             ty if ty.starts_with("enum.") => {
                 // Enums may reference known types (above list), check if it's a known type first
-                let mut split = ty[5..].split("::");
-                let class_name = split.next().unwrap();
-                let enum_raw_name = split.next().unwrap();
+                let split: Vec<&str> = ty[5..].split("::").collect();
+                let class_name: &str;
+                let enum_raw_name: &str;
+                match split[..] {
+                    [c, r] => {
+                        class_name = c;
+                        enum_raw_name = r;
+                    }
+                    [r] => {
+                        // Bit of a hack for supporting godot-steam builds. Enums from the Steam
+                        // API don't have the class prefix that native Godot enums do. So we just
+                        // guess that if they don't have the prefix, they're from Steam.
+                        class_name = "Steam";
+                        enum_raw_name = r;
+                    }
+                    _ => panic!("Invalid enum name {ty}"),
+                }
+
                 let name = format_ident!("{}", generate_enum_name(class_name, enum_raw_name));
                 let module = format_ident!("{}", module_name_from_class_name(class_name));
+
                 // Is it a known type?
                 match Ty::from_src(class_name) {
                     Ty::Enum(_) | Ty::Object(_) => {
