@@ -282,7 +282,7 @@ pub struct MethodName<'a> {
 }
 
 impl GodotMethod {
-    pub fn get_name(&self) -> MethodName {
+    pub fn get_name(&self) -> MethodName<'_> {
         // GDScript and NativeScript have ::new methods but we want to reserve
         // the name for the constructors.
         if &self.name == "new" {

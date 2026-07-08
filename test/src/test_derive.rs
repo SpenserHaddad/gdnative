@@ -435,7 +435,7 @@ impl GodotAttrDerefReturn {
     }
 
     #[method(deref_return)]
-    fn answer(&self) -> cell::Ref<Vec<i64>> {
+    fn answer(&self) -> cell::Ref<'_, Vec<i64>> {
         self.0.borrow()
     }
 }
@@ -487,7 +487,7 @@ impl GodotAttrAllArguments {
     }
 
     #[method(rpc = "disabled", name = "ask", deref_return)]
-    fn answer(&self, #[base] _base: &Reference) -> cell::Ref<Vec<i64>> {
+    fn answer(&self, #[base] _base: &Reference) -> cell::Ref<'_, Vec<i64>> {
         self.0.borrow()
     }
 }
