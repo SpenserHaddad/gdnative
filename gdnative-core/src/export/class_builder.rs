@@ -163,7 +163,7 @@ impl<C: NativeClass> ClassBuilder<C> {
     /// }
     /// ```
     #[inline]
-    pub fn signal(&self, name: &str) -> SignalBuilder<C> {
+    pub fn signal(&self, name: &str) -> SignalBuilder<'_, C> {
         SignalBuilder::new(self, GodotString::from(name))
     }
 

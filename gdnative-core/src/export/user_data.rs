@@ -618,13 +618,13 @@ mod local_cell {
         }
 
         #[inline]
-        pub fn try_borrow(&self) -> Result<Ref<ManuallyDrop<T>>, LocalCellError> {
+        pub fn try_borrow(&self) -> Result<Ref<'_, ManuallyDrop<T>>, LocalCellError> {
             let inner = self.inner()?;
             inner.try_borrow().map_err(|_| LocalCellError::BorrowFailed)
         }
 
         #[inline]
-        pub fn try_borrow_mut(&self) -> Result<RefMut<ManuallyDrop<T>>, LocalCellError> {
+        pub fn try_borrow_mut(&self) -> Result<RefMut<'_, ManuallyDrop<T>>, LocalCellError> {
             let inner = self.inner()?;
             inner
                 .try_borrow_mut()

@@ -200,7 +200,7 @@ impl<Own: Ownership> Dictionary<Own> {
     /// Modifying the same underlying collection while observing the safety assumptions will
     /// not violate memory safely, but may lead to surprising behavior in the iterator.
     #[inline]
-    pub fn iter(&self) -> Iter<Own> {
+    pub fn iter(&self) -> Iter<'_, Own> {
         Iter::new(self)
     }
 
