@@ -39,10 +39,18 @@ pub fn generate_json_if_needed() -> bool {
 
     // Workaround for Godot bug, where the generate command crashes the engine.
     // Try 10 times (should be reasonably high confidence that at least 1 run succeeds).
-    println!("Found Godot version < 3.3.1 with potential generate bug; trying multiple times...");
+    let command_tries = if has_generate_bug {
+        println!(
+            "Found Godot version < 3.3.1 with potential generate bug; trying multiple times... {}",
+            has_generate_bug
+        );
+        10
+    } else {
+        1
+    };
 
     exec(
-        if has_generate_bug { 10 } else { 1 },
+        command_tries,
         Command::new(&godot_bin)
             .arg("--no-window")
             .arg("--gdnative-generate-json-api")
