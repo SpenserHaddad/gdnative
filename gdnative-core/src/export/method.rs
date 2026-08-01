@@ -318,7 +318,11 @@ impl<'a> Varargs<'a> {
     #[doc(hidden)]
     #[inline]
     pub unsafe fn from_sys(num_args: libc::c_int, args: *mut *mut sys::godot_variant) -> Self {
-        let args = std::slice::from_raw_parts(args, num_args as usize);
+        let args = if num_args <= 0 || args.is_null() {
+            &[]
+        } else {
+            std::slice::from_raw_parts(args, num_args as usize)
+        };
         let args = std::mem::transmute::<&[*mut sys::godot_variant], &[&Variant]>(args);
         Self {
             idx: 0,
