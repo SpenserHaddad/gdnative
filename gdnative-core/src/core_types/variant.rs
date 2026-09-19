@@ -6,6 +6,7 @@ use std::fmt;
 use std::hash::Hash;
 use std::mem::{forget, transmute};
 use std::ptr;
+use std::sync::Arc;
 
 use crate::core_types::*;
 use crate::object::ownership::*;
@@ -1728,6 +1729,29 @@ impl<T: FromVariant + Eq + Hash> FromVariant for HashSet<T> {
             set.insert(item);
         }
         Ok(set)
+    }
+}
+
+impl<T: FromVariant> FromVariant for Arc<T> {
+    #[inline]
+    fn from_variant(variant: &Variant) -> Result<Self, FromVariantError> {
+        Ok(Arc::new(T::from_variant(&variant)?))
+    }
+}
+
+impl<T: ToVariant> ToVariant for Vec<Arc<T>> {
+    #[inline]
+    fn to_variant(&self) -> Variant {
+        let values: Vec<Variant> = self.iter().map(|x| x.to_variant()).collect();
+        values.to_variant()
+    }
+}
+
+impl FromVariant for ustr::Ustr {
+    #[inline]
+    fn from_variant(variant: &Variant) -> Result<Self, FromVariantError> {
+        let var_str = String::from_variant(variant)?;
+        Ok(ustr::Ustr::from(var_str.as_str()))
     }
 }
 
